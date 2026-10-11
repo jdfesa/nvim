@@ -29,7 +29,8 @@ perfil con `sh scripts/launch.sh` desde la raíz del repo.
 
 - MiniMax clonado con historial, licencia y remoto oficial `upstream`.
 - Referencias originales conservadas en `configs/`, sin modificar su comportamiento.
-- Fuente propia recortada en `learning/`: explorador, búsqueda y barra de estado.
+- Fuente propia en `learning/`: barra lateral, búsqueda, barra de estado y cierre seguro de buffers.
+- Números relativos y atajos de práctica compartidos con LazyVim para ventanas y pestañas.
 - Perfil `nvim-learning` instalado y probado headless y en pseudoterminal en macOS, Neovim 0.11.4.
 - LazyVim intacto, con su enlace y datos habituales; no actualizamos Neovim.
 - Sin LSP, parsers adicionales, snippets ni formato automático todavía.
@@ -43,13 +44,17 @@ perfil con `sh scripts/launch.sh` desde la raíz del repo.
 ## Getting Started
 
 1. [Launch and Separate Profiles](docs/05-launch-and-profiles.md): abrir y cambiar de perfil.
-2. [Learning Profile](docs/06-learning-profile.md): nuestros cuatro archivos, opciones y atajos.
-3. [Roadmap](ROADMAP.md): etapas y criterios para avanzar.
-4. [Installation and Isolated Profile](docs/01-installation.md): repetir en macOS/Arch.
-5. [File Map](docs/02-file-map.md): fuentes propias y referencias originales.
-6. [Configuration Workflow](docs/03-workflow.md): cambios pequeños y organización por lenguaje.
-7. [First Language Stack](docs/languages/web.md): HTML, CSS y JavaScript.
-8. [Learning Journal](docs/04-journal.md): cambios y verificaciones reales.
+2. [Learning Profile](docs/06-learning-profile.md): nuestros cinco archivos, opciones y dependencias.
+3. [Navigation and Practice Keymaps](docs/07-navigation-and-keymaps.md): activar la barra lateral y practicar.
+4. [Roadmap](ROADMAP.md): etapas y criterios para avanzar.
+5. [Installation and Isolated Profile](docs/01-installation.md): repetir en macOS/Arch.
+6. [File Map](docs/02-file-map.md): fuentes propias y referencias originales.
+7. [Configuration Workflow](docs/03-workflow.md): cambios pequeños y organización por lenguaje.
+8. [First Language Stack](docs/languages/web.md): HTML, CSS y JavaScript.
+9. [Learning Journal](docs/04-journal.md): cambios y verificaciones reales.
+
+Consulta rápida: [Keymaps](KEYMAPS.md), con teclas, modos, alcance y diferencias
+con LazyVim. La guía 07 explica los conceptos y propone ejercicios.
 
 El [índice de documentación](docs/README.md) reúne las guías.
 Las reglas están en [AGENTS.md](AGENTS.md): nombres en inglés ASCII,
@@ -63,9 +68,9 @@ Con Neovim 0.11+ y Git disponibles, desde la raíz del repo:
 rtk proxy env NVIM_APPNAME=nvim-learning nvim --clean -l scripts/install.lua
 ```
 
-Copia los cuatro archivos de `learning/`, verifica cambios locales y respalda
+Copia los cinco archivos de `learning/`, verifica cambios locales y respalda
 versiones instaladas que reemplaza. No instala plugins ni crea commits. El primer
-arranque descarga únicamente `mini.nvim` v0.18.0, con revisión fija. `ripgrep`
+arranque descarga `mini.nvim` v0.18.0 y `nvim-tree` v1.18.0, con revisiones fijas. `ripgrep`
 permite buscar texto con nuestro atajo.
 
 La configuración instalada **es una copia, no un enlace**. Editar `learning/`,
@@ -98,7 +103,11 @@ Checks estáticos, sin instalar plugins ni cargar el perfil:
 ```sh
 rtk proxy nvim --headless --clean -l tests/validate.lua
 rtk proxy nvim --headless --clean -l tests/install.lua
+rtk proxy nvim --headless --clean -l tests/keymaps.lua
 ```
+
+La prueba de keymaps compara las tablas Global/Sidebar con las definiciones de
+`learning/`, usando dependencias simuladas. No ejecuta sus acciones ni prueba la UI.
 
 Después de instalar, prueba de arranque real con archivos temporales:
 
@@ -107,10 +116,10 @@ rtk proxy env NVIM_APPNAME=nvim-learning nvim --headless -n -i NONE \
   -c 'luafile tests/smoke.lua' -c 'qa!'
 ```
 
-Esta última prueba sí carga el perfil y puede descargar mini.nvim si falta.
+Esta última prueba sí carga el perfil y puede descargar las dependencias si faltan.
 No sustituye usar el editor interactivamente ni probarlo en Arch.
 
-Regresión de terminal interactiva, con Python 3 estándar y dependencia ya instalada:
+Regresión de terminal interactiva, con Python 3 estándar y dependencias ya instaladas:
 
 ```sh
 rtk proxy python3 tests/terminal.py

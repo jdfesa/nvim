@@ -84,7 +84,7 @@ rtk proxy env NVIM_APPNAME=nvim-learning nvim --clean -l scripts/install.lua
 ```
 
 El instalador copia `learning/`; no crea repositorios ni descarga plugins. Al
-primer arranque, el perfil descarga solo `mini.nvim` con la revisión fijada.
+primer arranque, el perfil descarga `mini.nvim` y `nvim-tree` con revisiones fijadas.
 Detalles de instalación en [Installation](01-installation.md).
 
 La copia instalada **no es un enlace al repo**. Para mantener cambios en GitHub,

@@ -49,6 +49,7 @@ end
 
 for _, path in ipairs({
   'AGENTS.md',
+  'KEYMAPS.md',
   'README.md',
   'README.upstream.md',
   'ROADMAP.md',
@@ -59,14 +60,17 @@ for _, path in ipairs({
   'docs/04-journal.md',
   'docs/05-launch-and-profiles.md',
   'docs/06-learning-profile.md',
+  'docs/07-navigation-and-keymaps.md',
   'docs/languages/web.md',
   'learning/init.lua',
   'learning/plugin/10_options.lua',
   'learning/plugin/20_keymaps.lua',
   'learning/plugin/30_mini.lua',
+  'learning/plugin/40_sidebar.lua',
   'scripts/install.lua',
   'scripts/launch.sh',
   'tests/install.lua',
+  'tests/keymaps.lua',
   'tests/smoke.lua',
   'tests/terminal.py',
 }) do

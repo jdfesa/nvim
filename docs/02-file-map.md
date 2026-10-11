@@ -12,9 +12,10 @@ Neovim no selecciona automáticamente una configuración por el directorio de tr
 | `README.md` | Entrada propia y estado actual |
 | `README.upstream.md` | Guía original de MiniMax |
 | `ROADMAP.md` | Etapas y criterios de avance |
+| `KEYMAPS.md` | Referencia canónica de atajos activos; no configura el editor |
 | `AGENTS.md` | Instrucciones para trabajar en el repo: nombres, títulos e idioma; no configura Neovim |
 | `docs/` | Guías, lenguajes y bitácora |
-| `learning/` | Fuente canónica propia, cuatro archivos Lua explicados en la guía 06 |
+| `learning/` | Fuente canónica propia, cinco archivos Lua explicados en la guía 06 |
 | `scripts/install.lua` | Instalador del perfil recortado; no crea Git ni instala plugins |
 | `scripts/launch.sh` | Lanzador interactivo directo, sin envolver Neovim en RTK |
 | `setup.lua` | Generador; no es el init del editor |
@@ -32,6 +33,7 @@ Neovim no selecciona automáticamente una configuración por el directorio de tr
 | `.gitignore` | Excluye metadatos, temporales, variables privadas y datos/respaldos locales |
 | `tests/validate.lua` | Sintaxis Lua/JSON y estructura, sin plugins |
 | `tests/install.lua` | Regresiones del instalador, en XDG temporales |
+| `tests/keymaps.lua` | Compara teclas/modos/alcance de la referencia con mapas propios, sin plugins reales |
 | `tests/smoke.lua` | Arranque real y edición de archivos temporales |
 | `tests/terminal.py` | Regresión de pantalla/teclado en pseudoterminal; no prueba una app terminal concreta |
 | `.git/` | Historial y remotos, no configuración del editor |
@@ -39,8 +41,8 @@ Neovim no selecciona automáticamente una configuración por el directorio de tr
 ## Inside an Upstream Profile
 
 Empezar junto al código de [la referencia 0.11](../configs/nvim-0.11/init.lua).
-Esta sección explica upstream. Nuestro perfil activo solo conserva la estructura
-`init.lua` + opciones/atajos/MINI; sus archivos están en [Learning Profile](06-learning-profile.md).
+Esta sección explica upstream. Nuestro perfil activo conserva la estructura
+`init.lua` + opciones/atajos/MINI/barra lateral; sus archivos están en [Learning Profile](06-learning-profile.md).
 
 | Archivo | Qué hace y cuándo |
 | --- | --- |

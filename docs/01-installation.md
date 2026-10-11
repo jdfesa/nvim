@@ -78,7 +78,7 @@ rtk proxy env NVIM_APPNAME=nvim-learning nvim --clean -l scripts/install.lua
 ```
 
 El instalador propio requiere ese nombre exacto y rechaza destinos ajenos o enlaces
-simbólicos en el destino y sus archivos gestionados. Copia cuatro archivos y crea
+simbólicos en el destino y sus archivos gestionados. Copia cinco archivos y crea
 `.nvim-learning.json` con sus hashes. No carga el init, no descarga plugins y no hace
 `git init`, commits ni cambios de remotos.
 
@@ -96,8 +96,8 @@ la lista gestionada de `scripts/install.lua` y sus pruebas. La copia no se sincr
 env NVIM_APPNAME=nvim-learning nvim
 ```
 
-Este arranque carga nuestra configuración y descarga solo mini.nvim si falta.
-Después, abrir y cerrar funciona sin red mientras la dependencia esté instalada.
+Este arranque carga nuestra configuración y descarga mini.nvim y nvim-tree si faltan,
+con sus revisiones fijadas. Después funciona sin red mientras ambas estén instaladas.
 Lanzarlo directamente: no usar `rtk proxy` para la interfaz interactiva. Los
 comandos automatizados anteriores sí pueden usar RTK.
 Dentro del editor:
@@ -110,6 +110,7 @@ Dentro del editor:
 
 Resolver avisos de funciones usadas, no instalar proveedores opcionales solo para
 silenciar warnings. Lanzamiento y retorno a LazyVim en [Launch and Separate Profiles](05-launch-and-profiles.md).
+La barra se activa con `Espacio → e`; ver [Navigation and Practice Keymaps](07-navigation-and-keymaps.md).
 
 ## Upstream Generator
 

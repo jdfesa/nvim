@@ -9,8 +9,10 @@ Guías breves que acompañan los cambios, no un manual para leer entero antes de
 | [03 - Workflow](03-workflow.md) | Dónde agregar una opción, módulo o lenguaje |
 | [04 - Learning Journal](04-journal.md) | Qué hicimos y qué verificamos |
 | [05 - Launch and Separate Profiles](05-launch-and-profiles.md) | Abrir el entorno educativo y regresar a LazyVim |
-| [06 - Learning Profile](06-learning-profile.md) | Nuestros cuatro archivos, opciones, atajos y límites GitHub |
+| [06 - Learning Profile](06-learning-profile.md) | Nuestros cinco archivos, opciones, dependencias y límites GitHub |
+| [07 - Navigation and Practice Keymaps](07-navigation-and-keymaps.md) | Barra lateral, relativos y atajos compatibles con LazyVim |
 | [Languages - Web](languages/web.md) | HTML, CSS y JavaScript |
+| [Keymaps](../KEYMAPS.md) | Referencia rápida de teclas activas, modo, alcance y diferencias con LazyVim |
 
 El orden de trabajo está en el [roadmap](../ROADMAP.md).
 Los nombres y títulos siguen las reglas de [AGENTS.md](../AGENTS.md); el contenido
@@ -27,3 +29,5 @@ permanece en español.
 
 Las opciones importantes también tendrán comentarios junto al código. La bitácora
 registra el recorrido, no reemplaza la guía vigente.
+Si un componente agrega, cambia o retira atajos, actualizar también
+[KEYMAPS.md](../KEYMAPS.md) y ejecutar `tests/keymaps.lua`.

@@ -15,6 +15,7 @@ Dentro de nuestra **fuente canónica** `learning/`; `configs/` queda como refere
 | --- | --- |
 | Comportamiento compartido | `plugin/10_options.lua` |
 | Atajo global | `plugin/20_keymaps.lua` |
+| Atajos documentados | `KEYMAPS.md`, en la raíz del repo |
 | Módulo MINI | `plugin/30_mini.lua` |
 | Plugin externo | `plugin/40_plugins.lua` |
 | Opciones locales | `after/ftplugin/<filetype>.lua` |
@@ -31,6 +32,9 @@ responsabilidad clara, explicando cómo se carga.
 Una opción para CSS no debe alterar todos los buffers: revisar `vim.bo`, `vim.wo`
 o `setlocal` según su alcance. Los plugins se instalan una vez y se aplican a los
 lenguajes correspondientes. Al retirar un módulo, revisar atajos y dependencias.
+Al agregar, cambiar o quitar un atajo, actualizar [KEYMAPS.md](../KEYMAPS.md) y
+ejecutar `tests/keymaps.lua`. La guía 07 conserva conceptos y ejercicios, no una
+segunda copia de todas las tablas.
 
 ## Language Support Has Multiple Layers
 

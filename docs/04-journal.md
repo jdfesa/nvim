@@ -121,3 +121,63 @@ Recortar módulos y atajos juntos antes de añadir herramientas web.
   terminal interactiva en copias temporales. Verificar 11 documentos y 42 enlaces
   locales, exclusiones Git y 70 archivos publicables sin patrones de secretos
   detectados. Esto no equivale a una auditoría exhaustiva ni prueba real en Arch.
+
+## 2026-10-11 - Sidebar and Practice Navigation
+
+- Usuario pidió barra lateral real, números relativos y atajos de navegación
+  compatibles con LazyVim para practicar antes de una posible migración.
+- Añadir `learning/plugin/40_sidebar.lua`: nvim-tree v1.18.0, commit
+  `531b807b8f0d6f75016a0ee1e0cd5ce2086e9d95`, gestionado por mini.deps y verificado
+  al arrancar. Sin nvim-web-devicons ni Nerd Font obligatoria.
+- Reemplazar mini.files flotante por la barra persistente; MINI conserva búsqueda
+  y barra de estado y añade mini.bufremove para cerrar buffers sin perder ventanas.
+- Activar relativos, cursorline y contexto de desplazamiento; compartir atajos
+  para sidebar, guardar, buffers, splits y pestañas. Proteger el cierre de la
+  última pestaña. No añadir LSP, parsers, snippets ni formato automático.
+- `Espacio, e` reemplaza `Espacio, e, d`; `Espacio, s, g` es el atajo recomendado
+  de búsqueda de texto. Conservar fg/fh como aliases, documentando la diferencia
+  con LazyVim. No asignar borrado/renombrado de archivos dentro de la barra.
+- Corregir `E216 FileExplorer` silencioso de nvim-tree: netrw deshabilitado y
+  `hijack_netrw=false`, sin limpiar un grupo inexistente. Refresco externo con R
+  en vez de watchers, manteniendo el comportamiento sencillo y portable.
+- Ampliar instalador y pruebas a cinco archivos gestionados; comprobar migración
+  desde cuatro archivos y rechazo de un quinto archivo ajeno.
+- Añadir guía 07 con buffers/ventanas/pestañas, ejercicios y tabla de atajos;
+  actualizar guías vigentes, README y roadmap. Conservar el historial anterior.
+- Pruebas estáticas e instalador pasadas. Smoke verifica edición web y atajos de
+  sidebar/relativos/splits/tabs/cierre de buffers. PTY comprueba dibujo de la barra
+  y teclas reales, además de pantalla inicial, rutas con espacios y cierre.
+  Abrir una carpeta también muestra su árbol sin error.
+- Instalar en `/Users/jd/.config/nvim-learning`, con respaldo de versiones previas
+  en `learning-backup/20261011-052156-47683/`. Primer arranque instalado descargó
+  nvim-tree, aplicó su pin y pasó el smoke. MINI sigue en su pin original.
+- El init.lua propuesto en la raíz permanece intacto y no instalado; referencias
+  upstream, LazyVim y binario Neovim 0.11.4 sin cambios. No hacer commits ni push.
+- **Pendiente:** confirmar experiencia en la terminal habitual con el usuario,
+  práctica real del ejercicio web y ejecución en Arch.
+
+## 2026-10-11 - Canonical Keymap Reference
+
+- El usuario autorizó investigar y crear una referencia de atajos usando
+  terminología comunitaria y exposición gradual al inglés.
+- Consultar documentación oficial de Neovim y LazyVim: usan mappings/keymaps;
+  `KEYMAPS.md` es nuestra convención documental, no un nombre obligatorio del editor.
+- Crear [KEYMAPS.md](../KEYMAPS.md) con notación, modos, alcance, mapas globales,
+  barra lateral, controles básicos del picker, comandos nativos y diferencias
+  con LazyVim. Aclarar que Ctrl-s en mini.pick abre un split, no guarda.
+- Mantener conceptos y ejercicios en la guía 07 y sustituir sus tablas completas
+  por enlaces a la referencia. Enlazar el archivo desde README, índice y mapa.
+- Registrar en AGENTS.md: nombres/identificadores/encabezados ingleses, prosa
+  española por ahora, terminología comunitaria y actualización conjunta de atajos.
+- Añadir `tests/keymaps.lua`: captura las definiciones con dependencias simuladas
+  y compara 46 combinaciones de tecla/modo/alcance. No descarga plugins ni ejecuta
+  acciones; no valida controles internos de mini.pick ni interfaz.
+- Pruebas pasadas: 38 Lua y 10 JSON estáticos, instalador protegido y consistencia
+  de mapas. Cinco fixtures temporales rechazaron omisiones, modo/alcance incorrectos,
+  mapas extras y duplicados. Revisar 13 documentos, enlaces locales/anchors
+  y encabezados ASCII en inglés; `git diff --check` sin errores.
+- Solo documentación y prueba de consistencia en este cambio: no reinstalar el
+  perfil, cambiar plugins, editar upstream ni hacer commits/push. La validación
+  funcional previa sigue registrada arriba; no confundir estas pruebas con UI.
+- **Pendiente:** usar la referencia durante la práctica web y mantenerla junto
+  con cada componente futuro. Prueba real en Arch y experiencia habitual pendientes.
