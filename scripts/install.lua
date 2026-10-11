@@ -7,7 +7,7 @@ local root = vim.fs.dirname(vim.fs.dirname(script))
 local source = root .. '/learning'
 local target = vim.fn.stdpath('config')
 local marker = '.nvim-learning.json'
-local files = { 'init.lua', 'plugin/10_options.lua', 'plugin/20_keymaps.lua', 'plugin/30_mini.lua' }
+local files = { 'init.lua', 'plugin/10_options.lua', 'plugin/20_keymaps.lua', 'plugin/30_mini.lua', 'plugin/40_sidebar.lua' }
 
 local install = function()
   if vim.env.NVIM_APPNAME ~= 'nvim-learning' then

@@ -1,6 +1,6 @@
 -- Learning Profile
 -- Se ejecuta primero. Después Neovim carga plugin/*.lua en orden alfabético.
--- Este perfil usa la estructura de MiniMax, con solo tres módulos de edición.
+-- Este perfil usa la estructura de MiniMax y navegación preparada para practicar.
 if vim.env.NVIM_APPNAME ~= 'nvim-learning' then
   error('Abrí este perfil con NVIM_APPNAME=nvim-learning; no reemplaces LazyVim.')
 end
@@ -10,9 +10,12 @@ end
 
 vim.g.learning_profile = true
 vim.g.mapleader = ' '
+-- La barra lateral reemplaza netrw solo dentro de este perfil aislado.
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 
 -- Dependency Bootstrap
--- Una única dependencia, fijada a una revisión estable (mini.nvim v0.18.0).
+-- MINI está fijado a una revisión estable; la barra lateral se prepara en 40_sidebar.lua.
 -- stdpath evita rutas personales y separa los datos de los de LazyVim.
 local revision = '1345d191bb3da9c7b0e977f4387c5761f9bff68d'
 local origin = 'https://github.com/nvim-mini/mini.nvim.git'
@@ -50,7 +53,7 @@ require('mini.deps').setup()
 MiniDeps.add({ name = 'mini.nvim', source = origin, checkout = revision })
 
 -- Documentation
--- Los tags permiten abrir :help MiniFiles, :help MiniPick y :help MiniStatusline.
+-- Los tags permiten abrir :help MiniPick, :help MiniStatusline y :help MiniBufremove.
 if vim.fn.filereadable(mini_path .. '/doc/tags') == 0 then
   vim.cmd('helptags ' .. vim.fn.fnameescape(mini_path .. '/doc'))
 end

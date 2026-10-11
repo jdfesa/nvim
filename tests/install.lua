@@ -5,7 +5,7 @@ local script = vim.fn.fnamemodify(debug.getinfo(1, 'S').source:sub(2), ':p')
 local root = vim.fs.dirname(vim.fs.dirname(script))
 local base = vim.fn.tempname()
 local project = base .. '/repo with spaces'
-local files = { 'init.lua', 'plugin/10_options.lua', 'plugin/20_keymaps.lua', 'plugin/30_mini.lua' }
+local files = { 'init.lua', 'plugin/10_options.lua', 'plugin/20_keymaps.lua', 'plugin/30_mini.lua', 'plugin/40_sidebar.lua' }
 local read = function(path) return table.concat(vim.fn.readfile(path, 'b'), '\n') end
 local write = function(path, text)
   vim.fn.mkdir(vim.fs.dirname(path), 'p')
@@ -45,6 +45,21 @@ local test = function()
   end
   assert(run('nvim-learning').code == 0, 'Reinstalación idéntica falló.')
   assert(not uv.fs_stat(target .. '/learning-backup'), 'Creó respaldo sin cambios.')
+
+  -- Actualizar un perfil anterior de cuatro archivos agrega el quinto de forma segura.
+  local sidebar = target .. '/plugin/40_sidebar.lua'
+  local metadata = target .. '/.nvim-learning.json'
+  local old_state = vim.json.decode(read(metadata))
+  old_state.hashes['plugin/40_sidebar.lua'] = nil
+  write(metadata, vim.json.encode(old_state))
+  assert(uv.fs_unlink(sidebar))
+  write(sidebar, '-- Foreign sidebar\n')
+  assert(run('nvim-learning').code ~= 0, 'Sobrescribió una barra lateral ajena.')
+  assert(read(sidebar) == '-- Foreign sidebar\n')
+  assert(uv.fs_unlink(sidebar))
+  assert(run('nvim-learning').code == 0, 'No migró el perfil de cuatro archivos.')
+  assert(read(sidebar) == read(project .. '/learning/plugin/40_sidebar.lua'))
+  assert(vim.json.decode(read(metadata)).hashes['plugin/40_sidebar.lua'] ~= nil)
 
   local options = target .. '/plugin/10_options.lua'
   local before = read(options)
