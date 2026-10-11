@@ -1,0 +1,3 @@
+# Conservar los espacios originales de esta referencia externa sin reformatearla.
+# La excepción no se aplica a nuestras fuentes ni al resto del repositorio.
+/resources/nvim-lite-pluginless/init.lua -whitespace

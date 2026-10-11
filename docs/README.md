@@ -13,6 +13,7 @@ Guías breves que acompañan los cambios, no un manual para leer entero antes de
 | [07 - Navigation and Practice Keymaps](07-navigation-and-keymaps.md) | Barra lateral, relativos y atajos compatibles con LazyVim |
 | [Languages - Web](languages/web.md) | HTML, CSS y JavaScript |
 | [Keymaps](../KEYMAPS.md) | Referencia rápida de teclas activas, modo, alcance y diferencias con LazyVim |
+| [External References](../resources/README.md) | Propuestas de terceros para estudiar, no configuraciones activas |
 
 El orden de trabajo está en el [roadmap](../ROADMAP.md).
 Los nombres y títulos siguen las reglas de [AGENTS.md](../AGENTS.md); el contenido

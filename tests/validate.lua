@@ -11,6 +11,8 @@ end
 
 local lua_files = vim.fn.globpath(root .. '/configs', '**/*.lua', false, true)
 lua_files[#lua_files + 1] = root .. '/setup.lua'
+-- Compilar la referencia externa solo comprueba sintaxis; no ejecuta su init.
+lua_files[#lua_files + 1] = root .. '/resources/nvim-lite-pluginless/init.lua'
 for _, directory in ipairs({ 'learning', 'scripts', 'tests' }) do
   vim.list_extend(lua_files, vim.fn.globpath(root .. '/' .. directory, '**/*.lua', false, true))
 end
@@ -49,6 +51,7 @@ end
 
 for _, path in ipairs({
   'AGENTS.md',
+  '.gitattributes',
   'KEYMAPS.md',
   'README.md',
   'README.upstream.md',
@@ -73,6 +76,9 @@ for _, path in ipairs({
   'tests/keymaps.lua',
   'tests/smoke.lua',
   'tests/terminal.py',
+  'resources/README.md',
+  'resources/nvim-lite-pluginless/README.md',
+  'resources/nvim-lite-pluginless/init.lua',
 }) do
   check_file(root .. '/' .. path)
 end

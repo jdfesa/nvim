@@ -96,6 +96,9 @@ son referencias por versión, **no por sistema operativo**. Nuestra fuente
 actual. Antes de cambiar el binario elegiremos una versión común con Arch;
 no confundir actualizar el editor con actualizar la configuración.
 
+Otras propuestas se conservan como [External References](resources/README.md),
+con origen y atribución. No forman parte del perfil educativo ni se instalan.
+
 ## Validation
 
 Checks estáticos, sin instalar plugins ni cargar el perfil:

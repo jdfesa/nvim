@@ -16,6 +16,7 @@ Neovim no selecciona automáticamente una configuración por el directorio de tr
 | `AGENTS.md` | Instrucciones para trabajar en el repo: nombres, títulos e idioma; no configura Neovim |
 | `docs/` | Guías, lenguajes y bitácora |
 | `learning/` | Fuente canónica propia, cinco archivos Lua explicados en la guía 06 |
+| `resources/` | Referencias externas con procedencia/atribución; no las copia el instalador |
 | `scripts/install.lua` | Instalador del perfil recortado; no crea Git ni instala plugins |
 | `scripts/launch.sh` | Lanzador interactivo directo, sin envolver Neovim en RTK |
 | `setup.lua` | Generador; no es el init del editor |
@@ -31,6 +32,7 @@ Neovim no selecciona automáticamente una configuración por el directorio de tr
 | `.github/ISSUE_TEMPLATE/` | Formularios del proyecto original |
 | `.github/PULL_REQUEST_TEMPLATE.md` | Plantilla de contribuciones upstream |
 | `.gitignore` | Excluye metadatos, temporales, variables privadas y datos/respaldos locales |
+| `.gitattributes` | Conserva whitespace original solo en el init de la referencia nvim-lite |
 | `tests/validate.lua` | Sintaxis Lua/JSON y estructura, sin plugins |
 | `tests/install.lua` | Regresiones del instalador, en XDG temporales |
 | `tests/keymaps.lua` | Compara teclas/modos/alcance de la referencia con mapas propios, sin plugins reales |

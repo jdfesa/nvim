@@ -181,3 +181,26 @@ Recortar módulos y atajos juntos antes de añadir herramientas web.
   funcional previa sigue registrada arriba; no confundir estas pruebas con UI.
 - **Pendiente:** usar la referencia durante la práctica web y mantenerla junto
   con cada componente futuro. Prueba real en Arch y experiencia habitual pendientes.
+
+## 2026-10-11 - Publication and External Reference
+
+- El usuario autorizó Conventional Commits en inglés y push a `origin/main`.
+  Publicar `7f27fbb` para sidebar/navegación con pruebas funcionales y `56a2785`
+  para referencia de keymaps, guías y consistencia documental.
+- Antes de publicar, repetir pruebas estáticas, instalador, keymaps, smoke aislado
+  y pseudoterminal; todas pasaron. Revisar enlaces y patrones de credenciales en
+  archivos rastreados/nuevos, sin hallazgos; no es una auditoría exhaustiva.
+- El usuario confirmó incluir nvim-lite como referencia externa, conservando su
+  atribución. Guardar README e init originales bajo `resources/nvim-lite-pluginless/`
+  y explicación propia en [External References](../resources/README.md).
+- GitHub API confirmó copias exactas de la rama `pluginless`, commit
+  `2d1de3656a5f73717478692c6bc1be9e50b8f3dd`, con atribución a Radley E. Sidwell-lewis.
+  El origen no declara licencia explícita; no añadir una propia a esos archivos.
+- Advertir que el comando del README externo escribe en el perfil habitual.
+  No ejecutar, instalar ni mezclar esta propuesta con `learning/`.
+- Conservar el whitespace original mediante una excepción `.gitattributes`
+  limitada a ese init. Metadatos `.DS_Store` siguen excluidos de Git.
+- Validación estática ampliada a la sintaxis de la referencia sin ejecutarla:
+  39 Lua y 10 JSON, más instalador y las 46 combinaciones de keymaps, pasaron.
+- El perfil educativo, LazyVim, binario y referencias MiniMax no cambian en esta
+  publicación. La ejecución real en Arch continúa pendiente.
