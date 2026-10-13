@@ -104,8 +104,9 @@ Todas las secuencias están en [Tab Pages](../KEYMAPS.md#tab-pages).
 5. Creá una pestaña con `Espacio → Tab → Tab`; abrí `main.js` con `Espacio → f → f`.
 6. Cambiá de pestaña, cerrá la nueva y comprobá que los buffers siguen disponibles.
 
-No hace falta instalar LSP, snippets o formatters para estos ejercicios. Todavía
-no hay ayuda semántica web: probá tu página en el navegador y su consola.
+Estos ejercicios de navegación no dependen de LSP, snippets ni formatters.
+El soporte web incorporado se explica aparte en [Web Completion](languages/web.md):
+probá también tu página en el navegador y su consola.
 
 ## Compatibility and Reversal
 

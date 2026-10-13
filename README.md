@@ -33,7 +33,8 @@ perfil con `sh scripts/launch.sh` desde la raíz del repo.
 - Números relativos y atajos de práctica compartidos con LazyVim para ventanas y pestañas.
 - Perfil `nvim-learning` instalado y probado headless y en pseudoterminal en macOS, Neovim 0.11.4.
 - LazyVim intacto, con su enlace y datos habituales; no actualizamos Neovim.
-- Sin LSP, parsers adicionales, snippets ni formato automático todavía.
+- Autocompletado Blink/friendly-snippets como LazyVim y LSP limitado a HTML/CSS/JavaScript.
+- Sin parsers adicionales, linting ni formato automático al guardar.
 - Arranque visual confirmado por el usuario; práctica de funciones y ejecución real en Arch pendientes.
 - Documentación con títulos en inglés y contenido en español.
 
@@ -44,7 +45,7 @@ perfil con `sh scripts/launch.sh` desde la raíz del repo.
 ## Getting Started
 
 1. [Launch and Separate Profiles](docs/05-launch-and-profiles.md): abrir y cambiar de perfil.
-2. [Learning Profile](docs/06-learning-profile.md): nuestros cinco archivos, opciones y dependencias.
+2. [Learning Profile](docs/06-learning-profile.md): nuestros siete archivos, opciones y dependencias.
 3. [Navigation and Practice Keymaps](docs/07-navigation-and-keymaps.md): activar la barra lateral y practicar.
 4. [Roadmap](ROADMAP.md): etapas y criterios para avanzar.
 5. [Installation and Isolated Profile](docs/01-installation.md): repetir en macOS/Arch.
@@ -62,16 +63,18 @@ títulos en inglés y contenido en español.
 
 ## Install or Refresh
 
-Con Neovim 0.11+ y Git disponibles, desde la raíz del repo:
+Con Neovim 0.11.3+ y Git disponibles, desde la raíz del repo:
 
 ```sh
 rtk proxy env NVIM_APPNAME=nvim-learning nvim --clean -l scripts/install.lua
 ```
 
-Copia los cinco archivos de `learning/`, verifica cambios locales y respalda
+Copia los siete archivos de `learning/`, verifica cambios locales y respalda
 versiones instaladas que reemplaza. No instala plugins ni crea commits. El primer
 arranque descarga `mini.nvim` v0.18.0 y `nvim-tree` v1.18.0, con revisiones fijas. `ripgrep`
-permite buscar texto con nuestro atajo.
+permite buscar texto con nuestro atajo. La incorporación de completion/LSP usa
+Blink, friendly-snippets y Mason con revisiones fijas; necesita Node/npm.
+Ver [proceso, herramientas y primer ejercicio](docs/languages/web.md).
 
 La configuración instalada **es una copia, no un enlace**. Editar `learning/`,
 repetir el instalador con el perfil cerrado y reiniciar. No editar solo la copia
@@ -109,17 +112,22 @@ rtk proxy nvim --headless --clean -l tests/install.lua
 rtk proxy nvim --headless --clean -l tests/keymaps.lua
 ```
 
-La prueba de keymaps compara las tablas Global/Sidebar con las definiciones de
-`learning/`, usando dependencias simuladas. No ejecuta sus acciones ni prueba la UI.
+La prueba de keymaps compara Global/Sidebar/Completion/Commandline con las
+definiciones de `learning/`, usando dependencias simuladas. No ejecuta acciones
+ni prueba la UI. La integración web también comprueba los mapas reales del plugin:
+`tests/web-completion.lua`.
 
 Después de instalar, prueba de arranque real con archivos temporales:
 
 ```sh
 rtk proxy env NVIM_APPNAME=nvim-learning nvim --headless -n -i NONE \
   -c 'luafile tests/smoke.lua' -c 'qa!'
+rtk proxy env NVIM_APPNAME=nvim-learning nvim --headless -n -i NONE \
+  -c 'luafile tests/web-completion.lua' -c 'qa!'
 ```
 
-Esta última prueba sí carga el perfil y puede descargar las dependencias si faltan.
+Estas pruebas sí cargan el perfil y pueden descargar plugins si faltan; para la
+integración web, instalar primero los servidores según la [guía web](docs/languages/web.md).
 No sustituye usar el editor interactivamente ni probarlo en Arch.
 
 Regresión de terminal interactiva, con Python 3 estándar y dependencias ya instaladas:

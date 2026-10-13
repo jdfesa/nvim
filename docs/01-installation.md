@@ -12,9 +12,11 @@ El perfil nuevo está en `/Users/jd/.config/nvim-learning`; no sustituir ese enl
 
 ## Requirements
 
-Nuestro perfil necesita **Neovim 0.11+ y Git**. `ripgrep` habilita la búsqueda de
-texto. No hacen falta Node.js, Python, compilador, Tree-sitter CLI ni Nerd Font
-para esta primera etapa. Las herramientas web se elegirán cuando las necesitemos.
+Nuestro perfil necesita **Neovim 0.11.3+ y Git**. `ripgrep` habilita la búsqueda de
+texto. El autocompletado web incorporado necesita **Node.js/npm**, curl y
+utilidades de extracción para Mason. No exigimos compilador, Tree-sitter CLI ni
+Nerd Font; Python 3 solo se usa para nuestras pruebas PTY. Ver dependencias,
+versiones y proceso en [Web Completion](languages/web.md).
 
 ```sh
 rtk proxy nvim --version
@@ -78,7 +80,7 @@ rtk proxy env NVIM_APPNAME=nvim-learning nvim --clean -l scripts/install.lua
 ```
 
 El instalador propio requiere ese nombre exacto y rechaza destinos ajenos o enlaces
-simbólicos en el destino y sus archivos gestionados. Copia cinco archivos y crea
+simbólicos en el destino y sus archivos gestionados. Copia siete archivos y crea
 `.nvim-learning.json` con sus hashes. No carga el init, no descarga plugins y no hace
 `git init`, commits ni cambios de remotos.
 
@@ -96,8 +98,11 @@ la lista gestionada de `scripts/install.lua` y sus pruebas. La copia no se sincr
 env NVIM_APPNAME=nvim-learning nvim
 ```
 
-Este arranque carga nuestra configuración y descarga mini.nvim y nvim-tree si faltan,
-con sus revisiones fijadas. Después funciona sin red mientras ambas estén instaladas.
+Este arranque carga nuestra configuración y descarga los siete plugins fijados si faltan;
+Mason instala los tres servidores web dentro de los datos del perfil. El primer
+arranque necesita red y puede tardar; revisar `:Mason` antes de probar sugerencias.
+Después puede editar/completar sin red mientras plugins, binario de Blink y
+servidores ya estén instalados. Las actualizaciones del registro de Mason sí usan red.
 Lanzarlo directamente: no usar `rtk proxy` para la interfaz interactiva. Los
 comandos automatizados anteriores sí pueden usar RTK.
 Dentro del editor:

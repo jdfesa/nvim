@@ -76,7 +76,8 @@ terminal y error visible; no asumir que el arranque headless demuestra que la TU
 
 ## Install or Refresh on Another Machine
 
-Instalar Neovim 0.11+ y Git; `ripgrep` permite nuestro atajo de búsqueda de texto.
+Instalar Neovim 0.11.3+ y Git; `ripgrep` permite nuestro atajo de búsqueda de texto.
+Node.js/npm y utilidades de descarga/extracción permiten instalar los servidores web.
 Clonar [jdfesa/nvim](https://github.com/jdfesa/nvim) y, desde su raíz, revisar y ejecutar:
 
 ```sh
@@ -84,7 +85,9 @@ rtk proxy env NVIM_APPNAME=nvim-learning nvim --clean -l scripts/install.lua
 ```
 
 El instalador copia `learning/`; no crea repositorios ni descarga plugins. Al
-primer arranque, el perfil descarga `mini.nvim` y `nvim-tree` con revisiones fijadas.
+primer arranque, el perfil descarga los siete plugins con revisiones fijadas y
+Mason instala los tres servidores web. Proceso, pruebas y reversión en
+[Web Completion](languages/web.md).
 Detalles de instalación en [Installation](01-installation.md).
 
 La copia instalada **no es un enlace al repo**. Para mantener cambios en GitHub,

@@ -6,21 +6,23 @@
 `configs/` conserva las cuatro referencias originales para estudiar y comparar.
 No instalamos MiniMax completo ni modificamos esas referencias.
 
-| Archivo propio | Responsabilidad |
+| File | Responsibility |
 | --- | --- |
 | `learning/init.lua` | Validar perfil/versión, preparar mini.nvim y gestor mini.deps |
 | `learning/plugin/10_options.lua` | Opciones nativas y tema incluido en Neovim |
 | `learning/plugin/20_keymaps.lua` | Atajos de práctica para archivos, buffers, ventanas y pestañas |
 | `learning/plugin/30_mini.lua` | Búsqueda, barra de estado y cierre seguro de buffers con MINI |
 | `learning/plugin/40_sidebar.lua` | Instalar nvim-tree fijado y configurar la barra lateral sin iconos obligatorios |
-| `scripts/install.lua` | Copiar estos cinco archivos al perfil aislado y proteger cambios locales |
+| `learning/plugin/50_completion.lua` | Blink y friendly-snippets, con controles de LazyVim |
+| `learning/plugin/60_web_lsp.lua` | Mason y LSP limitado a HTML/CSS/JavaScript |
+| `scripts/install.lua` | Copiar estos siete archivos al perfil aislado y proteger cambios locales |
 | `scripts/launch.sh` | Lanzar la interfaz directamente, sin RTK, conservando argumentos |
 | `tests/install.lua` | Probar el instalador en destinos temporales |
 | `tests/smoke.lua` | Comprobar el arranque real y edición en archivos temporales |
 | `tests/terminal.py` | Probar pantalla y teclado del lanzador en pseudoterminal, con datos temporales |
 
 Neovim ejecuta `init.lua` primero y carga automáticamente los archivos de `plugin/`
-en orden alfabético. No hace falta añadir cuatro `require` al init para cargarlos.
+en orden alfabético. No hace falta añadir un `require` por archivo al init para cargarlos.
 Los atajos llaman a los módulos al usarlos, después de finalizar el arranque.
 
 Los títulos de los comentarios están en inglés y sus explicaciones en español.
@@ -60,7 +62,7 @@ los aliases conservados y la diferencia entre buffer, ventana y pestaña.
 
 ## Dependency and Revision
 
-Hay dos dependencias descargadas, sin actualizaciones automáticas:
+La base mantiene sus dos dependencias originales, sin actualizaciones automáticas:
 
 - `mini.nvim` **v0.18.0**, commit `1345d191bb3da9c7b0e977f4387c5761f9bff68d`.
   Activa `mini.pick`, `mini.statusline`, `mini.bufremove` y el gestor `mini.deps`.
@@ -80,8 +82,12 @@ el tag y el commit juntos, revisaremos diferencias y haremos una actualización
 controlada con respaldo; no actualizar plugins a ciegas. `mini.deps` sigue
 soportado para 0.11; evaluaremos `vim.pack` si elegimos 0.12+ como base común.
 
-Todavía no hay LSP, parsers adicionales, autocompletado añadido, snippets,
-formatter ni linter. Detectar HTML/CSS/JavaScript no equivale a instalar esos servicios.
+Desde el 2026-10-12 añadimos cinco dependencias para completion y LSP, usando
+el motor de LazyVim: Blink, friendly-snippets, nvim-lspconfig, Mason y
+mason-lspconfig. Los pins, responsabilidades, instalación y reversión están en
+[Web Completion](languages/web.md). nvim-lspconfig requiere **Neovim 0.11.3+**;
+Node/npm ejecutan los servidores dentro de los datos aislados del perfil.
+Seguimos sin parsers adicionales, formatter dedicado, linting ni formato al guardar.
 
 ## GitHub Boundaries
 

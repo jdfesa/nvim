@@ -17,14 +17,16 @@ Dentro de nuestra **fuente canónica** `learning/`; `configs/` queda como refere
 | Atajo global | `plugin/20_keymaps.lua` |
 | Atajos documentados | `KEYMAPS.md`, en la raíz del repo |
 | Módulo MINI | `plugin/30_mini.lua` |
-| Plugin externo | `plugin/40_plugins.lua` |
+| Plugin externo | Archivo numerado de `plugin/`; sidebar en 40, completion en 50, LSP web en 60 |
 | Opciones locales | `after/ftplugin/<filetype>.lua` |
-| Ajustes LSP, desde 0.11 | `after/lsp/<server>.lua` |
+| Ajustes LSP | Hoy `plugin/60_web_lsp.lua`; separar a `after/lsp/<server>.lua` cuando haga falta |
 | Snippets por lenguaje, si hacen falta | `after/snippets/<language>.json` |
 | Explicación y pruebas | `docs/languages/<language>.md` |
 
-Opciones, atajos y MINI ya existen. `40_plugins.lua` y `after/` son ubicaciones
-para próximos cambios, no archivos vacíos que debamos crear hoy. Al añadir archivos,
+Opciones, atajos, MINI, sidebar, completion y LSP web ya existen. `after/` sigue
+siendo una ubicación futura, no una carpeta vacía que debamos crear hoy.
+El usuario eligió Blink/friendly-snippets como LazyVim: no activar mini.completion
+ni otro motor en paralelo. Ver el recorrido en [Web Completion](languages/web.md). Al añadir archivos,
 actualizar la lista gestionada del instalador y sus pruebas.
 No duplicamos perfiles por OS. Si un archivo crece, lo dividimos cuando haya una
 responsabilidad clara, explicando cómo se carga.

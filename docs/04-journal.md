@@ -204,3 +204,88 @@ Recortar módulos y atajos juntos antes de añadir herramientas web.
   39 Lua y 10 JSON, más instalador y las 46 combinaciones de keymaps, pasaron.
 - El perfil educativo, LazyVim, binario y referencias MiniMax no cambian en esta
   publicación. La ejecución real en Arch continúa pendiente.
+
+## 2026-10-12 - LazyVim Completion and Web Language Servers
+
+### Need and Decision
+
+- El usuario pidió sugerencias inteligentes mientras escribe, como en su LazyVim,
+  y documentación del proceso; no solo un snippet HTML propio. Autorizó implementar.
+- Revisar LazyVim en modo lectura: usa Blink v1.10.2, friendly-snippets y preset
+  `enter`, con fuentes lsp/path/snippets/buffer. Su colección contiene `html5`.
+  La propuesta mini.completion/mini.snippets no llegó a activarse.
+- El entorno habitual no tenía servidores web instalados. Replicar su motor y
+  controles e incorporar HTML/CSS/JavaScript como necesidad concreta; no importar
+  toda LazyVim ni instalar frameworks, depurador, parsers o formatter dedicado.
+
+### Changes and Installation
+
+- Añadir `learning/plugin/50_completion.lua`: pins Blink/friendly-snippets,
+  menú automático, documentación a 200 ms, Enter para aceptar, campos con Tab.
+  Usar vim.snippet; texto en vez de iconos para no exigir Nerd Font o Tree-sitter.
+- Añadir `learning/plugin/60_web_lsp.lua`: pins nvim-lspconfig/Mason/mason-lspconfig,
+  capacidades de Blink y activación limitada a html/cssls/vtsls. Vtsls solo para
+  JavaScript; su dependencia interna de TypeScript no amplía el bloque de estudio.
+- Mantener mini.deps, MINI, sidebar y tema actuales. Los cinco plugins nuevos
+  usan revisiones verificadas del checkout habitual; registrar en la guía la
+  diferencia entre el checkout real de mason-lspconfig y su lockfile.
+- Instalar html-lsp/css-lsp **4.10.0** y vtsls **0.3.0** en el Mason exclusivo de
+  nvim-learning; sin npm global ni cambios en el Mason de LazyVim.
+- Reutilizar Node **22.20.0** / npm **10.9.3** ya disponibles; conservar Neovim
+  **0.11.4**. nvim-lspconfig fijado exige 0.11.3+: actualizar guardias y guías.
+- Ampliar instalador a siete archivos y probar migración desde cinco, conflictos
+  de los nuevos archivos, respaldo e idempotencia. Instalar copia gestionada con
+  respaldo en `learning-backup/20261012-204549-79279/`.
+- Añadir flag `learning_web_tools` para reversión sin borrar datos. Ampliar guía
+  web, KEYMAPS, README, workflow, requisitos, mapa de archivos y roadmap.
+  Los mapas locales de completion se separan de los globales y del command-line.
+
+### Findings
+
+- Esta revisión de mason-lspconfig no ejecuta ensure_installed en headless:
+  para el bootstrap automatizado usar `:MasonInstall` explícito. En TUI instala
+  lo solicitado normalmente. El guard no es un fallo de instalación del servidor.
+- Receipts Mason v2 usan `schema_version = "2.0"` y `source.id`; comprobar ese
+  formato para verificar versiones, no el antiguo campo `primary_source`.
+- Ensure_installed con versión fija solo nuevas instalaciones; no corrige paquetes
+  ya presentes ni bloquea todas las dependencias transitivas. No prometer un lock total.
+- Shift-Tab vuelve al comienzo del campo seleccionado; una aserción que comparaba
+  la columna final después de escribir era incorrecta. Verificar el campo/fila.
+- El sandbox rechazó escritura de lsp.log del perfil instalado en un check sin
+  permisos; repetir autorizado para logs aislados. Las pruebas PTY usan XDG temporales.
+
+### Validation and Limits
+
+- Pasar checks estáticos de **42 Lua y 10 JSON**, instalador y **70 combinaciones**
+  de tecla/modo/alcance. Integración también compara los mapas reales de Blink.
+- `tests/web-completion.lua`: versiones/paths aislados, capacidades de snippets,
+  clientes reales y candidatos `div`, `color`, `toUpperCase`; sin LSP en TypeScript.
+- Smoke de navegación previo sigue pasando con el nuevo stack.
+- `tests/terminal.py`: menú automático de HTML/CSS/JS sin invocar cmp.show;
+  Enter expande html5 y acepta el método JS, edición del idioma, Tab/Shift-Tab y
+  cancelación con Ctrl-e. Verificar sidebar y navegación anteriores y reversión por flag.
+- El timer de la prueba observa sin salir de Insert; no confundir respuesta LSP
+  con menú visible ni headless con prueba visual. PTY POSIX no es inspección en
+  Kitty/Ghostty ni prueba real de Arch, que siguen pendientes.
+- Verificar enlaces locales y coincidencia de los siete archivos instalados con
+  fuente/hashes. El enlace de LazyVim y sus **27 archivos** de configuración
+  conservan SHA256; referencias upstream, CHANGELOG y licencia intactos.
+- Durante la implementación, conservar cambios locales previos de documentación/guía
+  visual; todavía sin commits ni push en esa etapa.
+
+### Publication Scope
+
+- El usuario autorizó commits en inglés con Conventional Commits y push a `origin`.
+  Confirmó incluir **solo autocompletado web y su documentación**; la guía visual
+  y las explicaciones anteriores de edición/buffers quedan pendientes.
+- Separar configuración/pruebas/atajos de la explicación del proceso en dos commits:
+  `feat(completion): add LazyVim-style web completion` y
+  `docs(web): document completion setup and learning workflow`.
+- Repetir pruebas estáticas, instalador, keymaps, integración LSP y pseudoterminal
+  antes de publicar. Comprobar el estado remoto; no publicar en `upstream` ni forzar push.
+
+### Next Step
+
+Reiniciar el perfil en la terminal habitual, practicar html5 y un ejercicio pequeño
+con CSS/JavaScript y navegador; confirmar experiencia visual y repetir en Arch.
+Después de publicar, continuar por necesidades concretas y cambios documentados.

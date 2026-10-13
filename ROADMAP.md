@@ -28,7 +28,7 @@ archivo. Primero explicar, después activar y comprobar. Una etapa a la vez.
 
 - [ ] Confirmar terminal, versión de macOS y sesión Wayland/X11 en Arch.
 - [ ] Elegir y verificar la misma versión estable de Neovim en ambos sistemas.
-- [x] Revisar dependencias: Neovim 0.11+, Git y ripgrep; MINI y nvim-tree fijados.
+- [x] Revisar dependencias: Neovim 0.11.3+, Git y ripgrep; MINI y nvim-tree fijados.
 - [x] Instalar `nvim-learning` y comprobar rutas separadas de LazyVim en macOS.
 - [x] Definir `learning/` como fuente y el instalador protegido para copiar cambios.
 - [x] Comprobar el arranque del perfil recortado y edición de archivos en macOS headless.
@@ -46,8 +46,9 @@ Guía: [instalación](docs/01-installation.md).
 - [ ] Revisar `20_keymaps.lua`: modos, Leader y pocos atajos cotidianos.
 - [x] Conservar inicialmente explorador, búsqueda y barra de estado.
 - [x] Añadir barra lateral persistente, números relativos y atajos de práctica compatibles con LazyVim.
-- [ ] Evaluar autocompletado y ayuda de atajos antes de decidir qué mantener.
-- [x] Posponer sesiones, dashboard, snippets y extras que no necesitemos.
+- [x] Elegir completion como LazyVim: Blink/friendly-snippets, con aceptación por Enter.
+- [ ] Evaluar ayuda de atajos si la práctica la necesita.
+- [x] Posponer sesiones, dashboard y extras; snippets incorporados por necesidad HTML.
 - [x] Dejar solo atajos para módulos activos y funciones nativas.
 - [x] Arrancar el perfil recortado y abrir/guardar HTML/CSS/JavaScript en pruebas temporales.
 - [x] Probar el lanzador directo en pseudoterminal: pantalla, teclado y cierre; sin RTK en la TUI.
@@ -64,7 +65,8 @@ Guía: [mapa de archivos](docs/02-file-map.md).
 - [ ] Detectar los tres filetypes y añadir opciones locales solo si hacen falta.
 - [ ] Crear un ejercicio pequeño y probarlo en el navegador.
 - [ ] Diferenciar editor, runtime, LSP, parser, formatter y linter.
-- [ ] Elegir servidores LSP de uno en uno; comprobar que se adjuntan.
+- [x] Incorporar html/cssls/vtsls por el pedido de soporte inteligente web.
+- [ ] Repetir comprobación de servidores/menú en Arch y práctica habitual.
 - [ ] Añadir parsers Tree-sitter web y verificar resaltado.
 - [ ] Elegir formatter; comenzar con formato manual, no al guardar.
 - [ ] Añadir linting solo ante una necesidad concreta.
