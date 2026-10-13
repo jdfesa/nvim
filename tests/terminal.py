@@ -1,7 +1,7 @@
 """Interactive Terminal Regression
 
 Comprueba el lanzador en una pseudoterminal POSIX, no en modo headless.
-Usa Python estándar, datos temporales y copias de las dos dependencias ya instaladas.
+Usa Python estándar, datos temporales y copias de plugins/servidores ya instalados.
 """
 
 import fcntl
@@ -13,6 +13,7 @@ import select
 import shutil
 import signal
 import struct
+import subprocess
 import tempfile
 import termios
 import time
@@ -29,7 +30,7 @@ def check_documented_commands():
                 assert any(flag in line for flag in ("--headless", "--clean", "--version", " -l ")), (name, line)
 
 
-def check_terminal(base, environment, arguments, expected, navigation=False):
+def check_terminal(base, environment, arguments, expected, navigation=False, completion=None):
     pid, terminal = pty.fork()
     if pid == 0:
         os.chdir(ROOT)
@@ -62,6 +63,69 @@ def check_terminal(base, environment, arguments, expected, navigation=False):
         os.write(terminal, b"\x1b" + expression.encode())
         assert collect_until(response.exists), "Neovim no procesó la entrada del teclado."
         assert response.read_text() == "INPUT_OK\n"
+        if completion:
+            # Un timer observa la TUI sin salir de Insert ni invocar cmp.show().
+            # De ese modo probamos el menú AUTOMÁTICO, no solo respuestas del LSP.
+            state = base / ("completion-" + completion["server"] + ".json")
+            target = json.dumps(str(state))
+            probe = (
+                ':lua _G.completion_probe=vim.uv.new_timer(); '
+                '_G.completion_probe:start(80,80,vim.schedule_wrap(function() '
+                'local cmp=require("blink.cmp"); local items={}; '
+                'for _,item in ipairs(cmp.get_items()) do '
+                'items[#items+1]={label=item.label,source=item.source_id} end; '
+                'local selected=cmp.get_selected_item(); local clients={}; '
+                'for _,c in ipairs(vim.lsp.get_clients({bufnr=0})) do '
+                'if c.initialized then clients[#clients+1]=c.name end end; '
+                'local p=' + target + '; vim.fn.writefile({vim.json.encode({'
+                'visible=cmp.is_visible(),items=items,selected=selected and selected.label,'
+                'snippet=vim.snippet.active(),lines=vim.api.nvim_buf_get_lines(0,0,-1,false),'
+                'cursor=vim.api.nvim_win_get_cursor(0),clients=clients,errmsg=vim.v.errmsg})},p..".tmp"); '
+                'vim.uv.fs_rename(p..".tmp",p) end))\r'
+            )
+            os.write(terminal, probe.encode())
+
+            def snapshot():
+                return json.loads(state.read_text()) if state.exists() else {}
+
+            assert collect_until(lambda: completion["server"] in snapshot().get("clients", []), seconds=40), snapshot()
+            os.write(terminal, completion["keys"])
+
+            def has_candidate():
+                current = snapshot()
+                return current.get("visible") and any(
+                    item["label"] == completion["label"] and item["source"] == completion["source"]
+                    for item in current.get("items", [])
+                )
+
+            assert collect_until(has_candidate, seconds=15), ("No apareció menú automático", snapshot())
+            assert snapshot()["errmsg"] == "", snapshot()
+            if completion["source"] == "snippets":
+                assert snapshot().get("selected") == "html5", snapshot()
+                os.write(terminal, b"\r")  # Enter: aceptar, no llamar expand() desde Lua.
+                assert collect_until(lambda: snapshot().get("snippet") and any(
+                    "<!DOCTYPE html>" in line for line in snapshot().get("lines", [])
+                )), snapshot()
+                assert b"Snippet" in output, "No dibujó el tipo de candidato en el menú."
+                os.write(terminal, b"es")  # Reemplazar el primer campo seleccionado.
+                assert collect_until(lambda: any('lang="es"' in line for line in snapshot().get("lines", [])))
+                previous = snapshot()["cursor"]
+                os.write(terminal, b"\t")
+                assert collect_until(lambda: snapshot().get("cursor") != previous), "Tab no recorrió el snippet."
+                os.write(terminal, b"\x1b[Z")  # Shift-Tab, protocolo xterm.
+                # Al volver, Select sitúa el cursor al principio del campo; después
+                # de escribir estaba al final. Comparar el campo (fila), no esa columna.
+                assert collect_until(lambda: snapshot().get("cursor", [0])[0] == previous[0]), "Shift-Tab no volvió al campo."
+            elif completion['server'] == 'vtsls':
+                assert snapshot().get('selected') == 'toUpperCase', snapshot()
+                os.write(terminal, b'\r')
+                assert collect_until(lambda: any(
+                    'greeting.toUpperCase()' in line for line in snapshot().get('lines', [])
+                )), ('Enter no aceptó el método JS', snapshot())
+            else:
+                os.write(terminal, b"\x05")  # Ctrl-e: cancelar.
+                assert collect_until(lambda: snapshot().get("visible") is False), "Ctrl-e no cerró el menú."
+            os.write(terminal, b"\x1b")
         if navigation:
             # Pulsar los atajos en una TUI real, no simularlos solo con llamadas Lua.
             state = base / "navigation-state.json"
@@ -121,7 +185,10 @@ def check_terminal(base, environment, arguments, expected, navigation=False):
 def main():
     check_documented_commands()
     data_home = Path(os.environ.get("XDG_DATA_HOME") or Path.home() / ".local/share")
-    dependencies = ("start/mini.nvim", "opt/nvim-tree.lua")
+    dependencies = (
+        "start/mini.nvim", "opt/nvim-tree.lua", "opt/blink.cmp", "opt/friendly-snippets",
+        "opt/nvim-lspconfig", "opt/mason.nvim", "opt/mason-lspconfig.nvim",
+    )
     for name in dependencies:
         assert (data_home / "nvim-learning/site/pack/deps" / name).is_dir(), "Primero instalar las dependencias: " + name
     with tempfile.TemporaryDirectory(prefix="nvim-terminal-") as directory:
@@ -130,6 +197,8 @@ def main():
         for name in dependencies:
             shutil.copytree(data_home / "nvim-learning/site/pack/deps" / name,
                             base / "data/nvim-learning/site/pack/deps" / name, symlinks=True)
+        # Copiar binarios/registro aislados: la prueba no descarga herramientas nuevas.
+        shutil.copytree(data_home / "nvim-learning/mason", base / "data/nvim-learning/mason", symlinks=True)
         environment = os.environ.copy()
         environment.update({
             "TERM": "xterm-256color",
@@ -146,8 +215,36 @@ def main():
         # El árbol muestra el directorio del ejercicio, no todo el repo durante esta prueba.
         arguments = ["-c", "cd " + str(base), str(sample)]
         check_terminal(base, environment, arguments, b"TERMINAL_RENDER_OK", navigation=True)
+        fixtures = (
+            ("index.html", "<!-- COMPLETION_FIXTURE -->\n\n", {
+                "server": "html", "keys": b"GAhtml5", "label": "html5", "source": "snippets",
+            }),
+            ("styles.css", "/* COMPLETION_FIXTURE */\nbody {\n  \n}\n", {
+                "server": "cssls", "keys": b"3GAcol", "label": "color", "source": "lsp",
+            }),
+            ("main.js", '// COMPLETION_FIXTURE\nconst greeting = "hello";\n\n', {
+                "server": "vtsls", "keys": b"GAgreeting.toU", "label": "toUpperCase", "source": "lsp",
+            }),
+        )
+        for name, content, completion in fixtures:
+            sample = base / name
+            sample.write_text(content)
+            check_terminal(base, environment, ["-c", "cd " + str(base), str(sample)],
+                           b"COMPLETION_FIXTURE", completion=completion)
+        # Desactivar en la copia temporal: no editar el perfil instalado para la prueba.
+        init = base / "config/nvim-learning/init.lua"
+        init.write_text(init.read_text().replace("vim.g.learning_web_tools = true", "vim.g.learning_web_tools = false"))
+        rollback = subprocess.run([
+            "nvim", "--headless", "-n", "-i", "NONE", "-c",
+            "lua assert(package.loaded['blink.cmp'] == nil); assert(package.loaded['mason'] == nil); "
+            "assert(MiniPick and MiniBufremove); assert(#vim.lsp.get_clients() == 0); assert(vim.v.errmsg == '')",
+            "-c", "qa!",
+        ], env=environment, cwd=ROOT, capture_output=True, text=True, timeout=20)
+        assert rollback.returncode == 0, rollback.stderr
     print("OK: lanzador directo dibuja interfaz, procesa teclado y cierra; argumentos con espacios conservados.")
     print("OK: barra lateral renderizada, relativos, ventanas y pestañas comprobados con atajos reales.")
+    print("OK: menú automático HTML/CSS/JS, Enter acepta html5/método JS, Tab/Shift-Tab recorren campos, Ctrl-e cancela.")
+    print("OK: reversión por flag conserva MINI sin cargar Blink/Mason ni clientes LSP.")
     print("Pseudoterminal POSIX con datos temporales; no prueba visual de Kitty/Ghostty ni ejecución en Arch.")
 
 

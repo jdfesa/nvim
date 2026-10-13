@@ -5,7 +5,10 @@ local script = vim.fn.fnamemodify(debug.getinfo(1, 'S').source:sub(2), ':p')
 local root = vim.fs.dirname(vim.fs.dirname(script))
 local base = vim.fn.tempname()
 local project = base .. '/repo with spaces'
-local files = { 'init.lua', 'plugin/10_options.lua', 'plugin/20_keymaps.lua', 'plugin/30_mini.lua', 'plugin/40_sidebar.lua' }
+local files = {
+  'init.lua', 'plugin/10_options.lua', 'plugin/20_keymaps.lua', 'plugin/30_mini.lua',
+  'plugin/40_sidebar.lua', 'plugin/50_completion.lua', 'plugin/60_web_lsp.lua',
+}
 local read = function(path) return table.concat(vim.fn.readfile(path, 'b'), '\n') end
 local write = function(path, text)
   vim.fn.mkdir(vim.fs.dirname(path), 'p')
@@ -60,6 +63,20 @@ local test = function()
   assert(run('nvim-learning').code == 0, 'No migró el perfil de cuatro archivos.')
   assert(read(sidebar) == read(project .. '/learning/plugin/40_sidebar.lua'))
   assert(vim.json.decode(read(metadata)).hashes['plugin/40_sidebar.lua'] ~= nil)
+
+  -- Migrar desde cinco archivos; proteger también cada archivo nuevo de completion/LSP.
+  for _, relative in ipairs({ 'plugin/50_completion.lua', 'plugin/60_web_lsp.lua' }) do
+    local state = vim.json.decode(read(metadata))
+    state.hashes[relative] = nil
+    write(metadata, vim.json.encode(state))
+    assert(uv.fs_unlink(target .. '/' .. relative))
+    write(target .. '/' .. relative, '-- Foreign web config\n')
+    assert(run('nvim-learning').code ~= 0, 'Sobrescribió un archivo web ajeno.')
+    assert(read(target .. '/' .. relative) == '-- Foreign web config\n')
+    assert(uv.fs_unlink(target .. '/' .. relative))
+    assert(run('nvim-learning').code == 0, 'No migró el archivo web: ' .. relative)
+    assert(read(target .. '/' .. relative) == read(project .. '/learning/' .. relative))
+  end
 
   local options = target .. '/plugin/10_options.lua'
   local before = read(options)

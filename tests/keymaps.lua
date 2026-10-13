@@ -18,7 +18,7 @@ local add = function(target, keys, mode, scope)
 end
 
 local test = function()
-  local revision, sidebar_setup
+  local revision, sidebar_setup, blink_setup
   local noop = function() end
   local api = {
     node = {
@@ -46,6 +46,7 @@ local test = function()
       },
       v = { shell_error = 0 },
       trim = vim.trim,
+      g = { learning_web_tools = true },
     },
     MiniDeps = {
       config = { path = { package = '/mock' } },
@@ -53,17 +54,31 @@ local test = function()
     },
     require = function(name)
       if name == 'nvim-tree.api' then return api end
+      if name == 'blink.cmp' then return { setup = function(options) blink_setup = options end } end
       assert(name == 'nvim-tree', 'Dependencia no simulada: ' .. name)
       return { setup = function(options) sidebar_setup = options end }
     end,
   }, { __index = _G })
 
-  for _, path in ipairs({ '20_keymaps.lua', '40_sidebar.lua' }) do
+  for _, path in ipairs({ '20_keymaps.lua', '40_sidebar.lua', '50_completion.lua' }) do
     local chunk = assert(loadfile(root .. '/learning/plugin/' .. path))
     setfenv(chunk, environment)()
   end
   assert(sidebar_setup and type(sidebar_setup.on_attach) == 'function', 'Falta on_attach de la barra.')
   sidebar_setup.on_attach(1)
+
+  -- Defaults del preset en el pin Blink v1.10.2. La integración también compara
+  -- los mapas REALES del plugin con la documentación: no confiar solo en esta copia.
+  assert(blink_setup.keymap.preset == 'enter' and blink_setup.cmdline.keymap.preset == 'cmdline')
+  local insert = { '<C-Space>', '<C-e>', '<CR>', '<Tab>', '<S-Tab>', '<Up>', '<Down>', '<C-p>', '<C-n>', '<C-b>', '<C-f>', '<C-k>' }
+  for _, key in ipairs(insert) do add(actual, key, 'i', 'Completion') end
+  for key in pairs(blink_setup.keymap) do
+    if key ~= 'preset' then add(actual, key, 'i', 'Completion') end
+  end
+  for _, key in ipairs({ '<Tab>', '<S-Tab>', '<C-k>' }) do add(actual, key, 's', 'Completion') end
+  for _, key in ipairs({ '<Tab>', '<S-Tab>', '<C-Space>', '<C-n>', '<C-p>', '<Right>', '<Left>', '<C-y>', '<C-e>', '<End>' }) do
+    if blink_setup.cmdline.keymap[key] ~= false then add(actual, key, 'c', 'Commandline') end
+  end
 
   -- Una fila por tecla, con columnas Key, Action, Mode, Scope.
   -- El símbolo | escapado se normaliza antes de separar las celdas Markdown.
@@ -72,7 +87,7 @@ local test = function()
     if #cells == 6 then
       local keys = vim.trim(cells[2]):match('^`([^`]+)`$')
       local modes, scope = vim.trim(cells[4]), vim.trim(cells[5])
-      if keys and (scope == 'Global' or scope == 'Sidebar') then
+      if keys and (scope == 'Global' or scope == 'Sidebar' or scope == 'Completion' or scope == 'Commandline') then
         assert(vim.trim(cells[3]) ~= '', 'Falta Action: ' .. keys)
         for _, mode in ipairs(vim.split(modes, ',', { plain = true })) do
           add(documented, keys, vim.trim(mode), scope)
@@ -91,4 +106,4 @@ if not ok then
   vim.cmd('cquit 1')
 end
 print(string.format('OK: %d combinaciones de tecla, modo y alcance coinciden con KEYMAPS.md.', vim.tbl_count(actual)))
-print('Solo definiciones propias: dependencias simuladas, sin probar acciones, picker ni interfaz.')
+print('Definiciones propias y presets fijados: dependencias simuladas, sin probar acciones ni interfaz.')

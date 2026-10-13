@@ -50,11 +50,67 @@ no son comandos independientes que haya que ejecutar primero.
 | `n` | **Normal**: navegar y ejecutar acciones |
 | `i` | **Insert**: escribir texto |
 | `x` | **Visual**: seleccionar texto; no incluye Select mode |
+| `s` | **Select**: reemplazar un campo seleccionado de una plantilla |
+| `c` | **Command-line**: escribir después de `:`, `/` o `?` |
 
 **Global** significa que el mapa está definido para todo el perfil, en los modos
 indicados. La acción puede necesitar un buffer editable. **Sidebar** significa que
 solo funciona con el cursor dentro del árbol. Los controles de **Picker** se
 procesan aparte mientras el buscador está abierto; no heredan los mapas globales.
+**Completion** son mapas locales de blink.cmp, instalados al entrar en Insert en
+un buffer editable; **Commandline** corresponde a su integración con la línea de
+comandos. No cambian los atajos de navegación en Normal.
+
+## Completion and Snippets
+
+Motor **blink.cmp v1.10.2**, colección **friendly-snippets** y preset `enter`, como
+el LazyVim tomado de referencia. El menú aparece al escribir; las fuentes son
+LSP, rutas, snippets y palabras de buffers. Guía y ejercicios:
+[Web Completion](docs/languages/web.md).
+
+| Key | Action | Mode | Scope |
+| --- | --- | --- | --- |
+| `<CR>` | Accept Selected / New Line Fallback | i | Completion |
+| `<C-y>` | Select and Accept | i | Completion |
+| `<C-Space>` | Show Menu / Toggle Documentation | i | Completion |
+| `<C-n>` | Select Next / Native Fallback | i | Completion |
+| `<C-p>` | Select Previous / Native Fallback | i | Completion |
+| `<Down>` | Select Next / Cursor Fallback | i | Completion |
+| `<Up>` | Select Previous / Cursor Fallback | i | Completion |
+| `<C-e>` | Cancel / Native Fallback | i | Completion |
+| `<Tab>` | Next Snippet Field / Tab Fallback | i, s | Completion |
+| `<S-Tab>` | Previous Snippet Field / Native Fallback | i, s | Completion |
+| `<C-b>` | Scroll Documentation Up / Native Fallback | i | Completion |
+| `<C-f>` | Scroll Documentation Down / Native Fallback | i | Completion |
+| `<C-k>` | Signature Toggle / Native Fallback | i, s | Completion |
+
+`Enter` acepta **un candidato seleccionado**; si no hay selección, conserva el
+salto de línea. `Ctrl-y` puede seleccionar y aceptar directamente. `Tab` no es
+nuestro botón para aceptar sugerencias: recorre campos de un snippet activo.
+`fallback` significa usar el comportamiento anterior si la acción no aplica.
+La ventana de firmas de Blink sigue desactivada, como en su configuración base;
+por eso `Ctrl-k` usa el fallback. No prometemos todos los mapas LSP de LazyVim.
+`Ctrl-Space` puede ser interceptado por macOS/terminal; el menú automático sigue
+funcionando y permite elegir con `Ctrl-n`/`Ctrl-p`.
+
+### Command-line Completion
+
+En `:` el menú aparece automáticamente; en búsquedas `/` y `?` se invoca con
+`Ctrl-Space` o `Tab`. Las flechas izquierda/derecha siguen moviendo el cursor.
+
+| Key | Action | Mode | Scope |
+| --- | --- | --- | --- |
+| `<Tab>` | Show / Insert Single / Select Next | c | Commandline |
+| `<S-Tab>` | Show / Insert Single / Select Previous | c | Commandline |
+| `<C-Space>` | Show Menu / Native Fallback | c | Commandline |
+| `<C-n>` | Select Next / Native Fallback | c | Commandline |
+| `<C-p>` | Select Previous / Native Fallback | c | Commandline |
+| `<C-y>` | Select and Accept / Native Fallback | c | Commandline |
+| `<C-e>` | Cancel / Native Fallback | c | Commandline |
+| `<End>` | Hide Menu / Native Fallback | c | Commandline |
+
+Los comandos de consulta son `:Mason`, `:MasonLog` y `:checkhealth vim.lsp`.
+No añadimos todavía sus atajos de LazyVim ni mapas de refactorización.
 
 ## Files and Search
 
@@ -210,7 +266,10 @@ puede cambiar en versiones posteriores.
   busca **archivos Git**. Practicá `<Leader>sg` para evitar esa diferencia.
 - `<Leader>fh` se conserva como alias anterior. Preferí `<Leader>sh` para ayuda.
 - Los controles internos de Sidebar y Picker son propios de nuestros plugins.
-  No hay menú which-key, integración LSP ni atajos semánticos web todavía.
+  No hay menú which-key ni todos los atajos semánticos de LazyVim.
+- Desde **2026-10-12**, completion sí usa Blink/friendly-snippets con el preset
+  `enter` de LazyVim. La incorporación LSP se limita a HTML/CSS/JavaScript;
+  no importa la distribución completa. Diferencias en [Web Completion](docs/languages/web.md).
 
 ## Source and Maintenance
 
@@ -219,6 +278,8 @@ puede cambiar en versiones posteriores.
 - [40_sidebar.lua](learning/plugin/40_sidebar.lua): mapas locales de nvim-tree.
 - [30_mini.lua](learning/plugin/30_mini.lua): activa mini.pick con sus defaults.
 - [10_options.lua](learning/plugin/10_options.lua): opciones iniciales de visualización.
+- [50_completion.lua](learning/plugin/50_completion.lua): fuentes y presets Blink.
+- [60_web_lsp.lua](learning/plugin/60_web_lsp.lua): servidores y Mason aislado.
 
 El código es la fuente de verdad. Al agregar, cambiar o retirar componentes,
 actualizar esta referencia y sus enlaces en el mismo cambio. Los ejercicios van
@@ -228,9 +289,12 @@ en la guía 07, no en otra tabla duplicada. Para comprobar teclas, modos y alcan
 rtk proxy nvim --headless --clean -l tests/keymaps.lua
 ```
 
-Esta prueba compara los mapas propios con las tablas Global/Sidebar, usando
-dependencias simuladas sin descargarlas. No prueba acciones, controles internos
-del picker ni renderizado: para cambios funcionales también usar smoke y PTY.
+Esta prueba compara los mapas propios y los presets fijados con las tablas
+Global/Sidebar/Completion/Commandline, usando dependencias simuladas sin descargarlas.
+`tests/web-completion.lua` también compara los mapas reales de Blink con esta
+referencia. La prueba estática no prueba acciones, controles internos
+del picker ni renderizado: para cambios funcionales también
+usar smoke y PTY.
 
 ### Inspect Active Keymaps
 

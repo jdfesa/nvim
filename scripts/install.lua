@@ -7,13 +7,16 @@ local root = vim.fs.dirname(vim.fs.dirname(script))
 local source = root .. '/learning'
 local target = vim.fn.stdpath('config')
 local marker = '.nvim-learning.json'
-local files = { 'init.lua', 'plugin/10_options.lua', 'plugin/20_keymaps.lua', 'plugin/30_mini.lua', 'plugin/40_sidebar.lua' }
+local files = {
+  'init.lua', 'plugin/10_options.lua', 'plugin/20_keymaps.lua', 'plugin/30_mini.lua',
+  'plugin/40_sidebar.lua', 'plugin/50_completion.lua', 'plugin/60_web_lsp.lua',
+}
 
 local install = function()
   if vim.env.NVIM_APPNAME ~= 'nvim-learning' then
     error('Usá NVIM_APPNAME=nvim-learning. No instalaremos sobre el perfil habitual.')
   end
-  if vim.fn.has('nvim-0.11') ~= 1 then error('Necesitás Neovim 0.11 o superior.') end
+  if vim.fn.has('nvim-0.11.3') ~= 1 then error('Necesitás Neovim 0.11.3 o superior.') end
 
   -- No seguir enlaces dentro del destino: podrían escribir sobre otra configuración.
   local check_path = function(path, expected_type)

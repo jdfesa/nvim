@@ -6,5 +6,6 @@ require('mini.statusline').setup({ use_icons = false })
 -- Cerrar un archivo sin destruir la distribución de ventanas ni la barra lateral.
 require('mini.bufremove').setup()
 
--- Sin LSP, parsers adicionales, autocompletado, snippets ni formato automático.
--- Los añadiremos por necesidad, explicando cada cambio antes de activarlo.
+-- Completion y LSP viven en 50_completion.lua y 60_web_lsp.lua.
+-- No activar mini.completion/mini.snippets: usamos el motor y colección de LazyVim.
+-- Seguimos sin parsers adicionales, formatter ni formato automático al guardar.

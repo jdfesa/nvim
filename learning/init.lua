@@ -4,11 +4,13 @@
 if vim.env.NVIM_APPNAME ~= 'nvim-learning' then
   error('Abrí este perfil con NVIM_APPNAME=nvim-learning; no reemplaces LazyVim.')
 end
-if vim.fn.has('nvim-0.11') ~= 1 then
-  error('Este perfil necesita Neovim 0.11 o superior.')
+if vim.fn.has('nvim-0.11.3') ~= 1 then
+  error('Este perfil necesita Neovim 0.11.3 o superior para nvim-lspconfig.')
 end
 
 vim.g.learning_profile = true
+-- Cambiar a false permite desactivar completion y LSP sin borrar sus datos.
+vim.g.learning_web_tools = true
 vim.g.mapleader = ' '
 -- La barra lateral reemplaza netrw solo dentro de este perfil aislado.
 vim.g.loaded_netrw = 1
